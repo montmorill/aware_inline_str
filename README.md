@@ -11,13 +11,25 @@
 
 ## 文件
 
-| 文件 | 说明 |
+采用 src layout，无第三方依赖：
+
+| 路径 | 说明 |
 | --- | --- |
-| `aware_inline_str.py` | 完整实现，单文件、无第三方依赖 |
+| `src/aware_inline_str/__init__.py` | 公开 API（重新导出） |
+| `src/aware_inline_str/_core.py` | 码位分配、冲突处理、`InlineStr` 本体 |
+| `src/aware_inline_str/_recover.py` | 函数出口恢复（`wrap_return` 等） |
+| `src/aware_inline_str/_adapters.py` | 可注册的调用适配器 |
+| `src/aware_inline_str/_decorator.py` | `@inline_aware` |
+| `src/aware_inline_str/_ast.py` | AST import hook |
+| `src/aware_inline_str/_patch.py` | `patch_module` |
+| `src/aware_inline_str/re.py` | `re.Match` 辅助函数和默认适配器 |
+| `src/aware_inline_str/__main__.py` | `python -m aware_inline_str` 冒烟测试 |
 | `test_core.py` | 类级别测试（不需要 AST hook） |
 | `test_ast.py` | AST hook / 装饰器 / 适配器测试（自包含，自动生成 fixture） |
+| `pyproject.toml` | 打包配置 |
 
-要求 Python 3.10+。
+要求 Python 3.10+。仓库内直接运行测试不需要安装（测试文件会把 `src`
+加入 `sys.path`）；作为依赖使用时可 `pip install -e .`。
 
 ## 快速开始
 
@@ -194,7 +206,8 @@ install_ast_hook(
 ## `re.Match`
 
 `re.Match` 是 C 不可变类型，不能继承或 monkeypatch，`m.group()` 返回的是
-普通 `str` 拷贝。两种恢复方式：
+普通 `str` 拷贝。辅助函数位于 `aware_inline_str.re`（导入顶层包时会自动
+导入并注册默认适配器）。两种恢复方式：
 
 **被 hook 覆盖的代码**：默认适配器会自动处理 `.group/.groups/.groupdict`，
 函数内部拿到的就是 InlineStr，不需要等到 return：
@@ -209,7 +222,7 @@ def f(a):
 原 InlineStr 切片即可精确恢复：
 
 ```python
-from aware_inline_str import (
+from aware_inline_str.re import (
     inline_match, inline_group, inline_groups, inline_findall, inline_finditer,
 )
 
@@ -273,4 +286,13 @@ python test_core.py
 python test_ast.py
 ```
 
+两个测试都会把仓库的 `src` 加入 `sys.path`，因此无需先安装。
 `test_ast.py` 会在临时目录中生成带 hook 的 fixture 包，不需要额外文件。
+
+安装后（`pip install -e .`）还可以运行：
+
+```bash
+python -m aware_inline_str
+```
+
+执行内置的冒烟测试。

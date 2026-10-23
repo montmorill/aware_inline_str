@@ -9,7 +9,12 @@ string methods, conflict resolution, formatting, copy/pickle.
 from __future__ import annotations
 
 import copy
+import os
 import pickle
+import sys
+
+# Run from a source checkout without installing (src layout).
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "src"))
 
 from aware_inline_str import InlineStr
 

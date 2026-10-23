@@ -1,8 +1,8 @@
 """End-to-end tests for the AST hook, @inline_aware and call adapters.
 
 The instrumented fixture packages are generated in a temporary directory, so
-this file is self-contained and can be run from anywhere next to
-``aware_inline_str.py``:
+this file is self-contained and can be run from anywhere next to the
+``src`` directory:
 
     python test_ast.py
 """
@@ -15,21 +15,26 @@ import shutil
 import sys
 import tempfile
 
+# Run from a source checkout without installing (src layout).
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "src"))
+
 from aware_inline_str import (
     DEFAULT_MATCH_METHODS,
     NOT_HANDLED,
     InlineStr,
     inline_aware,
-    inline_findall,
-    inline_group,
-    inline_groups,
-    inline_match,
     install_ast_hook,
     patch_module,
     prepare_many,
     register_call_adapter,
     register_method_adapter,
     wrap_return,
+)
+from aware_inline_str.re import (
+    inline_findall,
+    inline_group,
+    inline_groups,
+    inline_match,
 )
 
 # ---------------------------------------------------------------------------
