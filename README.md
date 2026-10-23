@@ -24,8 +24,8 @@
 | `src/aware_inline_str/_patch.py` | `patch_module` |
 | `src/aware_inline_str/re.py` | `re.Match` 辅助函数和默认适配器 |
 | `src/aware_inline_str/__main__.py` | `python -m aware_inline_str` 冒烟测试 |
-| `test_core.py` | 类级别测试（不需要 AST hook） |
-| `test_ast.py` | AST hook / 装饰器 / 适配器测试（自包含，自动生成 fixture） |
+| `test/test_core.py` | 类级别测试（不需要 AST hook） |
+| `test/test_ast.py` | AST hook / 装饰器 / 适配器测试（自包含，自动生成 fixture） |
 | `pyproject.toml` | 打包配置 |
 
 要求 Python 3.10+。仓库内直接运行测试不需要安装（测试文件会把 `src`
@@ -282,12 +282,13 @@ InlineStr.configure(text_types=MyText)
 ## 运行测试
 
 ```bash
-python test_core.py
-python test_ast.py
+python test/test_core.py
+python test/test_ast.py
 ```
 
-两个测试都会把仓库的 `src` 加入 `sys.path`，因此无需先安装。
-`test_ast.py` 会在临时目录中生成带 hook 的 fixture 包，不需要额外文件。
+两个测试都会把仓库的 `src` 加入 `sys.path`，因此无需先安装，也不依赖当前
+工作目录。`test/test_ast.py` 会在临时目录中生成带 hook 的 fixture 包，
+不需要额外文件。
 
 安装后（`pip install -e .`）还可以运行：
 

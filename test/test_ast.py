@@ -2,9 +2,9 @@
 
 The instrumented fixture packages are generated in a temporary directory, so
 this file is self-contained and can be run from anywhere next to the
-``src`` directory:
+repository root:
 
-    python test_ast.py
+    python test/test_ast.py
 """
 
 from __future__ import annotations
@@ -16,7 +16,13 @@ import sys
 import tempfile
 
 # Run from a source checkout without installing (src layout).
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "src"))
+sys.path.insert(
+    0,
+    os.path.join(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+        "src",
+    ),
+)
 
 from aware_inline_str import (
     DEFAULT_MATCH_METHODS,
