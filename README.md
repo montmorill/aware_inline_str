@@ -224,12 +224,32 @@ inline_findall(r"A.B", s)
 
 ```python
 InlineStr.configure(
-    text_types=(MyText,),   # 额外的“文本类”类型
+    text_types=(MyText,),   # 带 .text 的包装类型按文本处理（替换当前设置）
     scan_objects=True,      # 恢复时遍历普通对象的 vars(obj)
     key_registry=False,     # 关闭构造期冲突检查
     error_type=MyError,     # 码位耗尽时抛出的异常
 )
 ```
+
+`text_types` 用于“字符串包装类型”：实例只要有字符串类型的 `.text` 属性，
+`from_iterable` / `from_obj` 就把它当作文本，而不是一个消息段（包装对象本身
+不保留，只保留其文本）。
+
+```python
+class MyText:
+    def __init__(self, text):
+        self.text = text
+
+InlineStr.configure(text_types=(MyText,))
+s = InlineStr.from_iterable([MyText("hi"), obj])
+s.to_list()          # ['hi', obj]
+
+# 需要多个类型时一次传完整列表；传单个类也可以
+InlineStr.configure(text_types=(MyText, AnotherText))
+InlineStr.configure(text_types=MyText)
+```
+
+注意它**替换**当前列表而不是追加；默认是空元组。
 
 `scan_objects=True` 可以恢复普通对象属性里的 InlineStr，但大对象图会更慢。
 

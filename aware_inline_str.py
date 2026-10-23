@@ -728,7 +728,10 @@ class InlineStr(str):
     ):
         """Configure text-like types, allocation errors and object scanning.
 
-        ``memory_level`` is accepted for API compatibility and ignored.
+        ``text_types`` lists wrapper types whose ``.text`` attribute should be
+        treated as text; it *replaces* the current tuple rather than adding
+        to it.  ``memory_level`` is accepted for API compatibility and
+        ignored.
         ``scan_objects=True`` makes recovery walk ``vars(obj)`` for ordinary
         objects in a function's locals/arguments (useful for attribute
         containers; potentially expensive for large object graphs).
